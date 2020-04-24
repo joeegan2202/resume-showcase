@@ -9,6 +9,7 @@
   align-items: center;
   justify-content: left;
   font-size: calc(10px + 2vmin);
+  font-family: Roboto;
   color: white;
   position: fixed;
   top: 0px;
@@ -19,10 +20,17 @@
 
 .App-header p {
   margin: 5vw;
+  flex: 5;
+  text-align: left;
+}
+
+.App-header button {
+  margin: 3vw;
+  flex: 1;
 }
 
 .scroll {
-  padding: 10vh;
+  padding: 5vh 10vh 1vh 10vh;
   margin-top: 30vh;
 }
 

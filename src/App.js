@@ -20,11 +20,11 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header" style={{height: ((this.state.scrollPosition < .25) ? 30 : 15) + 'vh'}}>
+        <header className="App-header" style={{height: ((this.state.scrollPosition < 220) ? 30 : 15) + 'vh'}}>
           <p>
             Edit <b>src/App.js</b> and save to reload.
           </p>
-          <Button color="primary">Test Button</Button>
+          <Button color="primary" variant="contained">Test Button</Button>
         </header>
         <Scroller callback={this.scrollCallback.bind(this)}></Scroller>
       </div>
@@ -33,18 +33,14 @@ class App extends React.Component {
 }
 
 class Scroller extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
   scrollListener = () => {
     const scroll = document.body.scrollTop || document.documentElement.scrollTop
 
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight
+    // const height = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
-    const scrolled = scroll/height
+    // const scrolled = scroll/height
 
-    this.props.callback(scrolled)
+    this.props.callback(scroll)
   }
 
   componentDidMount() {
