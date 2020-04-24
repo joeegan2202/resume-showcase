@@ -13,7 +13,7 @@
   color: white;
   position: fixed;
   top: 0px;
-  height: 30vh;
+  height: 20vh;
   width: 100%;
   transition: height 0.2s linear;
 }
@@ -27,11 +27,15 @@
 .App-header button {
   margin: 3vw;
   flex: 1;
+  font-size: calc(5px + 2vmin);
+  word-wrap: none;
+  max-height: 90%;
+  margin: 5%;
 }
 
 .scroll {
   padding: 5vh 10vh 1vh 10vh;
-  margin-top: 30vh;
+  margin-top: 20vh;
 }
 
 .scroll p {

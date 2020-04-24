@@ -11,6 +11,21 @@ class App extends React.Component {
     }
   }
 
+  jsonCookie = () => {
+    let cookie = '{"' + document.cookie + '"}'
+
+    cookie = cookie.replace(/; /g, '", "')
+    cookie = cookie.replace(/=/g, '":"')
+
+    console.log(cookie)
+
+    try {
+      return JSON.parse(cookie)
+    } catch (error) {
+      return error
+    }
+  }
+
   scrollCallback = (scrollPosition) => {
     this.setState({
       scrollPosition: scrollPosition
@@ -20,11 +35,11 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header" style={{height: ((this.state.scrollPosition < 220) ? 30 : 15) + 'vh'}}>
+        <header className="App-header" style={{height: ((this.state.scrollPosition < 220) ? 20 : 10) + 'vh'}}>
           <p>
             Edit <b>src/App.js</b> and save to reload.
           </p>
-          <Button color="primary" variant="contained">Test Button</Button>
+          <Button color="primary" variant="contained" fullWidth onClick={() => {alert(this.jsonCookie().test)}}>Test Button</Button>
         </header>
         <Scroller callback={this.scrollCallback.bind(this)}></Scroller>
       </div>
@@ -35,10 +50,6 @@ class App extends React.Component {
 class Scroller extends React.Component {
   scrollListener = () => {
     const scroll = document.body.scrollTop || document.documentElement.scrollTop
-
-    // const height = document.documentElement.scrollHeight - document.documentElement.clientHeight
-
-    // const scrolled = scroll/height
 
     this.props.callback(scroll)
   }
