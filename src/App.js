@@ -9,10 +9,23 @@ class App extends React.Component {
     super(props)
 
     this.state = {
-      authenticated: false,
+      session: this.jsonCookie().session,
       scrollPosition: 0,
       uname: '', // State for the values of the input fields
       pword: ''
+    }
+  }
+
+  componentDidMount() {
+    if(this.state.session) {
+      this.request({}).then(data => {
+        if(data.session) {
+          this.setState({session: data.session})
+        } else {
+          this.setState({session: false})
+          document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:01 GMT"
+        }
+      })
     }
   }
 
@@ -27,7 +40,7 @@ class App extends React.Component {
     try {
       return JSON.parse(cookie)
     } catch (error) {
-      return error
+      return false
     }
   }
 
@@ -37,6 +50,23 @@ class App extends React.Component {
     })
   }
 
+  request(requests) {
+        console.log(`http://localhost:3500/?session=${this.state.session}&${(() => {
+        let total = ''
+        for(const prop in requests) {
+          total += `${prop}=${requests[prop]}&`
+        }
+        return total
+      })()}`)
+    return (fetch(`http://localhost:3500/?session=${this.state.session}&${(() => {
+        let total = ''
+        for(const prop in requests) {
+          total += `${prop}=${requests[prop]}&`
+        }
+        return total
+      })()}`).then(response => response.json()))
+  }
+
   authenticate() { // Method to get session id from server with username and password and store with cookie
     try {
     fetch(`http://localhost:3500/auth?uname=${this.state.uname}&pword=${crypto.createHash('md5').update(this.state.pword).digest('hex')}`)
@@ -44,6 +74,8 @@ class App extends React.Component {
       .then(data => {
         if(data) {
           console.log(data.session)
+          document.cookie = `session=${data.session}`
+          this.setState({session: data.session})
         } else {
           console.log('None')
         }
@@ -61,7 +93,7 @@ class App extends React.Component {
           <p>
             Edit <b>src/App.js</b> and save to reload.
           </p>
-          {(!this.state.authenticated) ? // If we aren't authenticated, render login
+          {(!this.state.session) ? // If we aren't authenticated, render login
           <form onSubmit={e => {e.preventDefault(); this.authenticate()}}>
             <div id="input">
              <TextField id="uname" label="Username"
@@ -75,19 +107,27 @@ class App extends React.Component {
               <Button type="submit" color="primary" variant="contained" fullWidth>Login</Button>
             </div>
           </form> : // If we are, render icon etc.
-          <div id="icon"><img src="icon.png"></img></div>}
+          <div id="icon"><img alt="" src="icon.png"></img></div>}
         </header>
-        <Scroller callback={this.scrollCallback.bind(this)}></Scroller>
+        <Scroller request={this.request.bind(this)}
+          scrollCallback={this.scrollCallback.bind(this)}></Scroller>
       </div>
     )
   }
 }
 
 class Scroller extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      requestData: ''
+    }
+  }
   scrollListener = () => { // Listen to scroll position and callback to App
     const scroll = document.body.scrollTop || document.documentElement.scrollTop // Stolen from StackOverflow
 
-    this.props.callback(scroll)
+    this.props.scrollCallback(scroll)
   }
 
   componentDidMount() {
@@ -101,6 +141,11 @@ class Scroller extends React.Component {
   render() {
     return (
       <div className="scroll">
+        <Button color="primary" variant="contained" onClick={() => {
+          this.props.request({test:'stuff'})
+            .then(data => this.setState({requestData: data.requestedData}))}
+            }>Get Request</Button>
+        <h1>{this.state.requestData}</h1>
         <p>
           A good deal of text is to be put into this paragraph tag.<br/>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lacinia vestibulum porttitor. Nulla ultrices fermentum arcu, a pretium arcu malesuada nec. Vivamus imperdiet volutpat ligula vel finibus. Curabitur lorem mi, ultricies pretium lacinia finibus, tincidunt a turpis. Duis interdum lorem nec ex malesuada, ut finibus ex venenatis. Maecenas ac mi diam. Vivamus ullamcorper luctus massa vel viverra. Suspendisse sit amet cursus nisi, vel hendrerit nisi. Nulla facilisi. Quisque libero justo, tincidunt quis purus vitae, laoreet tempor odio. Suspendisse semper sapien in libero scelerisque gravida. Mauris molestie sapien eu sapien rhoncus pulvinar. Praesent vitae mollis felis, a laoreet augue. Interdum et malesuada fames ac ante ipsum primis in faucibus. Suspendisse et mauris ut tellus placerat ullamcorper.<br/>

@@ -11,7 +11,19 @@ var main = null
 mongo.connect('mongodb://127.0.0.1:4000', (err, result) => { // Load database to main
   main = result.db('main')
   main.collection('sessions').deleteMany({}) // Automatically delete all sessions if server restarts
+  setInterval(() => {
+    main.collection('sessions').find({}).toArray((err, find) => {
+      if(!find) return
+    
+      for(session of find) {
+        if(Date.now() - session.time > 30*60*1000) {
+          main.collection('sessions').deleteOne(session)
+        }
+      }
+    })
+  }, 1000)
 })
+
 
 app.get('/', (req, res) => { // All server requests not authenticating
 
@@ -21,7 +33,16 @@ app.get('/', (req, res) => { // All server requests not authenticating
   main.collection('sessions').findOne({session: req.query.session}, (err, find) => {
     if(find) {
       if(Date.now() - find.time < 30*60*1000) {
-        res.send(find)
+        let result = {session: find.session}
+        //
+        // Execute primary request
+        //
+        if(req.query.test) {
+          result.requestedData = `query received from client: ${req.query.test}`
+        }
+
+        // End response
+        res.send(result)
       } else {
         main.collection('sessions').deleteOne({session: req.query.session})
         res.send(false)
@@ -30,9 +51,6 @@ app.get('/', (req, res) => { // All server requests not authenticating
       res.send(false)
     }
   })
-  //
-  // Execute primary request
-  //
 })
 
 app.get('/auth', (req, res) => { // For just authenticating
