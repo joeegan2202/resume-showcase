@@ -1,17 +1,22 @@
 import React from 'react';
 import './App.css';
-import { Button } from '@material-ui/core';
+import './icon.png'
+import { Button, TextField } from '@material-ui/core';
+import crypto from 'crypto' // Import for hashing
 
 class App extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
+      authenticated: false,
       scrollPosition: 0,
+      uname: '', // State for the values of the input fields
+      pword: ''
     }
   }
 
-  jsonCookie = () => {
+  jsonCookie = () => { // Method to convert cookie data to parsed json automatically
     let cookie = '{"' + document.cookie + '"}'
 
     cookie = cookie.replace(/; /g, '", "')
@@ -26,20 +31,51 @@ class App extends React.Component {
     }
   }
 
-  scrollCallback = (scrollPosition) => {
+  scrollCallback = (scrollPosition) => { // Callback to resize header on scroll
     this.setState({
       scrollPosition: scrollPosition
     })
   }
 
+  authenticate() { // Method to get session id from server with username and password and store with cookie
+    try {
+    fetch(`http://localhost:3500/auth?uname=${this.state.uname}&pword=${crypto.createHash('md5').update(this.state.pword).digest('hex')}`)
+      .then(response => response.json())
+      .then(data => {
+        if(data) {
+          console.log(data.session)
+        } else {
+          console.log('None')
+        }
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header" style={{height: ((this.state.scrollPosition < 220) ? 20 : 10) + 'vh'}}>
+        <header className="App-header" style={{ // Responsive script to resize header
+          height: ((this.state.scrollPosition < 220) ? 20 : 10) + 'vh'}}>
           <p>
             Edit <b>src/App.js</b> and save to reload.
           </p>
-          <Button color="primary" variant="contained" fullWidth onClick={() => {alert(this.jsonCookie().test)}}>Test Button</Button>
+          {(!this.state.authenticated) ? // If we aren't authenticated, render login
+          <form onSubmit={e => {e.preventDefault(); this.authenticate()}}>
+            <div id="input">
+             <TextField id="uname" label="Username"
+              autoComplete="current-username" variant="outlined"
+              onChange={(event) => this.setState({uname: event.target.value})}/>
+             <TextField id="pword" label="Password"
+              type="password" autoComplete="current-password" variant="outlined"
+              onChange={(event) => this.setState({pword: event.target.value})}/>
+            </div>
+            <div id="button">
+              <Button type="submit" color="primary" variant="contained" fullWidth>Login</Button>
+            </div>
+          </form> : // If we are, render icon etc.
+          <div id="icon"><img src="icon.png"></img></div>}
         </header>
         <Scroller callback={this.scrollCallback.bind(this)}></Scroller>
       </div>
@@ -48,8 +84,8 @@ class App extends React.Component {
 }
 
 class Scroller extends React.Component {
-  scrollListener = () => {
-    const scroll = document.body.scrollTop || document.documentElement.scrollTop
+  scrollListener = () => { // Listen to scroll position and callback to App
+    const scroll = document.body.scrollTop || document.documentElement.scrollTop // Stolen from StackOverflow
 
     this.props.callback(scroll)
   }
