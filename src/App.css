@@ -9,9 +9,11 @@
   font-family: Roboto;
   position: fixed;
   top: 0px;
-  height: 20vh;
+  height: 30vh;
+  min-height: 150px;
   width: 100%;
   transition: height 0.2s linear;
+  z-index: 1;
 }
 
 #icon {
@@ -63,7 +65,7 @@
 
 .scroll {
   padding: 5vh 10vh 1vh 10vh;
-  margin-top: 20vh;
+  margin-top: 30vh;
 }
 
 .scroll p {

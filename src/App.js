@@ -12,7 +12,8 @@ class App extends React.Component {
       session: this.jsonCookie().session,
       scrollPosition: 0,
       uname: '', // State for the values of the input fields
-      pword: ''
+      pword: '',
+      largeSize: true
     }
   }
 
@@ -27,6 +28,12 @@ class App extends React.Component {
         }
       })
     }
+    
+    this.setState({ largeSize: (window.innerWidth > 600) })
+
+    window.addEventListener('resize', () => {
+      this.setState({ largeSize: (window.innerWidth > 600) })
+    })
   }
 
   jsonCookie = () => { // Method to convert cookie data to parsed json automatically
@@ -67,6 +74,7 @@ class App extends React.Component {
       })()}`).then(response => response.json()))
   }
 
+
   authenticate() { // Method to get session id from server with username and password and store with cookie
     try {
     fetch(`http://localhost:3500/auth?uname=${this.state.uname}&pword=${crypto.createHash('md5').update(this.state.pword).digest('hex')}`)
@@ -89,11 +97,11 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header" style={{ // Responsive script to resize header
-          height: ((this.state.scrollPosition < 220) ? 20 : 10) + 'vh'}}>
+          height: ((this.state.scrollPosition < 220) ? 30 : 10) + 'vh'}}>
           <p>
             Edit <b>src/App.js</b> and save to reload.
           </p>
-          {(!this.state.session) ? // If we aren't authenticated, render login
+          {(!this.state.session && this.state.largeSize) ? // If we aren't authenticated, render login
           <form onSubmit={e => {e.preventDefault(); this.authenticate()}}>
             <div id="input">
              <TextField id="uname" label="Username"

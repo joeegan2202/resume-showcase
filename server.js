@@ -34,6 +34,7 @@ app.get('/', (req, res) => { // All server requests not authenticating
     if(find) {
       if(Date.now() - find.time < 30*60*1000) {
         let result = {session: find.session}
+        console.log(`Session authenticated: ${find.session}`)
         //
         // Execute primary request
         //
