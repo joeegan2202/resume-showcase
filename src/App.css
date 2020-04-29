@@ -26,6 +26,16 @@
   height: 100%;
 }
 
+#hamburger {
+  height: 60%;
+  display: block;
+  margin: 5%;
+}
+
+#hamburger img {
+  height: 100%;
+}
+
 .App-header p {
   margin: 5vw;
   flex: 5;

@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import './icon.png'
+import './hamburger.png'
 import { Button, TextField } from '@material-ui/core';
 import crypto from 'crypto' // Import for hashing
 
@@ -94,6 +95,26 @@ class App extends React.Component {
   }
 
   render() {
+    let login
+    if(this.state.session) {
+      login = (<div id="icon"><img alt="" src="icon.png"></img></div>)
+    } else if(this.state.largeSize) {
+      login = (<form onSubmit={e => {e.preventDefault(); this.authenticate()}}>
+        <div id="input">
+         <TextField id="uname" label="Username"
+          autoComplete="current-username" variant="outlined"
+          onChange={(event) => this.setState({uname: event.target.value})}/>
+         <TextField id="pword" label="Password"
+          type="password" autoComplete="current-password" variant="outlined"
+          onChange={(event) => this.setState({pword: event.target.value})}/>
+        </div>
+        <div id="button">
+          <Button type="submit" color="primary" variant="contained" fullWidth>Login</Button>
+        </div>
+      </form>)  // If we are, render icon etc.
+    } else {
+      login = (<div id="hamburger"><img alt="" src="hamburger.png"></img></div>)
+    }
     return (
       <div className="App">
         <header className="App-header" style={{ // Responsive script to resize header
@@ -101,21 +122,7 @@ class App extends React.Component {
           <p>
             Edit <b>src/App.js</b> and save to reload.
           </p>
-          {(!this.state.session && this.state.largeSize) ? // If we aren't authenticated, render login
-          <form onSubmit={e => {e.preventDefault(); this.authenticate()}}>
-            <div id="input">
-             <TextField id="uname" label="Username"
-              autoComplete="current-username" variant="outlined"
-              onChange={(event) => this.setState({uname: event.target.value})}/>
-             <TextField id="pword" label="Password"
-              type="password" autoComplete="current-password" variant="outlined"
-              onChange={(event) => this.setState({pword: event.target.value})}/>
-            </div>
-            <div id="button">
-              <Button type="submit" color="primary" variant="contained" fullWidth>Login</Button>
-            </div>
-          </form> : // If we are, render icon etc.
-          <div id="icon"><img alt="" src="icon.png"></img></div>}
+          {login}
         </header>
         <Scroller request={this.request.bind(this)}
           scrollCallback={this.scrollCallback.bind(this)}></Scroller>
