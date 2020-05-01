@@ -1,0 +1,48 @@
+.authview {
+  margin-top: 25vh;
+  text-align: center;
+}
+
+.authview .sidebar {
+  position: fixed;
+  top: var(--header-height);
+  transition: top 0.2s linear;
+  width: 20%;
+  height: 100%;
+}
+
+.authview .sidebar ul {
+  margin: .5vw;
+}
+
+#content {
+  margin-left: 20%;
+  padding: 5%;
+}
+
+.unauthview {
+  margin-top: 30%;
+  padding: 5vh 10vh 1vh 10vh;
+  text-align: center;
+}
+
+@keyframes blinking {
+  0% {opacity: 100%;}
+  49% {opacity: 100%;}
+  50% {opacity: 0%;}
+  100% {opacity: 0%;}
+}
+
+#blinking {
+  display: inline;
+  animation: blinking 1s linear infinite;
+}
+
+.view {
+  padding: 5vh 10vh 1vh 10vh;
+  margin-top: 30vh;
+}
+
+.view p {
+  margin: 0;
+}
