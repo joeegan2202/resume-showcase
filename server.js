@@ -11,7 +11,6 @@ var main = null
 mongo.connect('mongodb://127.0.0.1:4000', (err, result) => { // Load database to main
   main = result.db('main')
   main.collection('sessions').deleteMany({}) // Automatically delete all sessions if server restarts
-  main.collection('auth').deleteMany({}) // Automatically delete all sessions if server restarts
   setInterval(() => {
     main.collection('sessions').find({}).toArray((err, find) => {
       if(!find) return
