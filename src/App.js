@@ -97,7 +97,7 @@ class App extends React.Component {
 
   authenticate() { // Method to get session id from server with username and password and store with cookie
     try {
-    fetch(`http://localhost:3500/auth?uname=${this.state.uname}&pword=${crypto.createHash('md5').update(this.state.pword).digest('hex')}`)
+    fetch(`http://localhost:3500/auth?uname=${this.state.uname}&pword=${crypto.createHash('sha256').update(this.state.pword).digest('hex')}`)
       .then(response => response.json())
       .then(data => {
         if(data) {

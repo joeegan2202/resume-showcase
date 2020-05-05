@@ -11,6 +11,7 @@ var main = null
 mongo.connect('mongodb://127.0.0.1:4000', (err, result) => { // Load database to main
   main = result.db('main')
   main.collection('sessions').deleteMany({}) // Automatically delete all sessions if server restarts
+  main.collection('auth').deleteMany({}) // Automatically delete all sessions if server restarts
   setInterval(() => {
     main.collection('sessions').find({}).toArray((err, find) => {
       if(!find) return
@@ -56,13 +57,13 @@ app.get('/', (req, res) => { // All server requests not authenticating
 
 app.get('/auth', (req, res) => { // For just authenticating
   let uname = req.query.uname
-  let pword = req.query.pword
+  let pword = crypto.createHash('sha256').update(req.query.pword).digest('hex')
 
   main.collection('auth').findOne({uname, pword}, (err, find) => { // Attempt to find auth entry with username and password
     if(find) {
       console.log(find._id.toString()) // If found, debug testing
       const now = Date.now()
-      const session = crypto.createHash('md5').update(find._id.toString() + now).digest('hex') // Create session id based off of mongo _id and current time
+      const session = crypto.createHash('sha256').update(find._id.toString() + now).digest('hex') // Create session id based off of mongo _id and current time
       main.collection('sessions').insertOne({time: now, session})
       res.send({session}) // Insert to database sessions and return to client
     } else {

@@ -29,13 +29,18 @@ class AuthView extends View {
             </a></Card>
           <p>
             This website was built on the MERN stack (MongoDB, ExpressJS, ReactJS, NodeJS),
-            utilizing MaterialUI from Google's Material Design.
+            utilizing MaterialUI from Google's Material Design, and was written almost entirely in JavaScript.
             The web server and back-end API server are both currently hosted on my own server.
+          </p>
+          <p>
+             I am not a web designer, so I know that the general formatting is substandard, and CSS is an enormous pain.
           </p>
         </div>
         break
       case 1: content = <div id="content">
-        <p>Repos here!!!</p>
+        <p>
+          <h1>My Various Coding Projects</h1>
+        </p>
       </div>
         break
       case 2: content = <div id="content">
