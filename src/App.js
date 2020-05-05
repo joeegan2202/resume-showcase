@@ -16,8 +16,28 @@ class App extends React.Component {
       uname: '', // State for the values of the input fields
       pword: '',
       largeSize: true,
-      onlyAuth: false
+      onlyAuth: false,
+      scrollPosition: 0
     }
+  }
+
+  resize() {
+    let state = {}
+    if(window.innerWidth > 600) {
+      state.onlyAuth = false
+      state.largeSize = true
+    } else {
+      state.largeSize = false
+    }
+    if(this.state.scrollPosition < 220) {
+      document.documentElement.style.setProperty('--header-height', `${Math.max(.25 * window.innerHeight, 100)}px`)
+      if(this.state.session) {
+        document.documentElement.style.setProperty('--header-height', `${Math.max(.15 * window.innerHeight, 100)}px`)
+      }
+    } else {
+      document.documentElement.style.setProperty('--header-height', `${Math.max(.1 * window.innerHeight, 100)}px`)
+    }
+    this.setState(state)
   }
 
   componentDidMount() {
@@ -32,18 +52,9 @@ class App extends React.Component {
       })
     }
     
-    this.setState({ largeSize: (window.innerWidth > 600) })
+    this.resize()
 
-    window.addEventListener('resize', () => {
-      let state = {}
-      if(window.innerWidth > 600) {
-        state.onlyAuth = false
-        state.largeSize = true
-      } else {
-        state.largeSize = false
-      }
-      this.setState(state)
-    })
+    window.addEventListener('resize', this.resize.bind(this))
   }
 
   jsonCookie = () => { // Method to convert cookie data to parsed json automatically
@@ -63,11 +74,8 @@ class App extends React.Component {
 
   scrollCallback = (scrollPosition) => { // Callback to resize header on scroll
     console.log(scrollPosition)
-    if(scrollPosition < 220) {
-      document.documentElement.style.setProperty('--header-height', `${Math.max(.25 * window.innerHeight, 150)}px`)
-    } else {
-      document.documentElement.style.setProperty('--header-height', `${Math.max(.1 * window.innerHeight, 150)}px`)
-    }
+    this.setState({scrollPosition})
+    this.resize()
   }
 
   request(requests) {
@@ -96,6 +104,7 @@ class App extends React.Component {
           console.log(data.session)
           document.cookie = `session=${data.session}`
           this.setState({session: data.session})
+          this.resize()
         } else {
           console.log('None')
         }
