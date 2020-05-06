@@ -40,6 +40,16 @@ class AuthView extends View {
       case 1: content = <div id="content">
         <p>
           <h1>My Various Coding Projects</h1>
+          <h2>Modern Projects</h2>
+          <b>C++</b>
+          <p>
+            This is my testing of the SDL library. A lot was built off of an online tutorial,
+            but I wanted to play around with C++ basics on my own. I'm much more comfortable with pointers,
+            C++ classes, and C++ strangeness.
+          </p>
+          <Card className="githubcard"><a href="https://github.com/joeegan2202/sdltest">
+            <img alt="github link" src="sdltest.png"></img>
+          </a></Card>
         </p>
       </div>
         break
