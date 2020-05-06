@@ -7,7 +7,7 @@ class Sidebar extends React.Component {
     return (
       <div className="sidebar">
         <List>
-          {['About', 'Projects', 'Resume'].map((text, index) => (
+          {['About', 'Projects', 'Resumé'].map((text, index) => (
             <ListItem button key={text} onClick={() => this.props.callback(index)}>
               <ListItemText primary={text}></ListItemText>
             </ListItem>

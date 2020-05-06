@@ -30,7 +30,11 @@
   text-align: left;
 }
 
-#content h1 {
+#content h1,h2 {
+  margin-top: 0;
+}
+
+#content p {
   margin-top: 0;
 }
 

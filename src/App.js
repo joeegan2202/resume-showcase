@@ -155,7 +155,7 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           {(!this.state.onlyAuth || this.state.largeSize) ? <p>
-            <b>Welcome to Joe's Demonstration Website/Resume!</b>
+            <b>Welcome to Joe's Demonstration Website/Resumé!</b>
           </p> : null}
           {login}
         </header>
